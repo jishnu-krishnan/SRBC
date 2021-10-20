@@ -50,4 +50,35 @@ router.post('/add',(req,res,next)=>{
     })
 })
 
+// @desc The api for update product
+// @route PUT /api/product/edit/:id
+router.put('/edit/:id',(req,res,next)=>{
+    Product.findById(req.params.id,(err,found)=>{
+        if(!found){
+            return res.json({success: false, msg: 'not found'});
+        }else{
+            Product.findByIdAndUpdate(req.params.id,{$set: req.body},(error,content)=>{
+                if(error){
+                    return res.json({success: false, msg: 'not found'});
+                }else{
+                    return res.json({success:true,msg:'successfully edited'})
+                }
+            })
+        }
+    })
+})
+
+
+// @desc delete product
+// @route DELETE /product/delete/:id
+router.delete('/delete/:id',(req,res,next) => {
+    Product.findOneAndRemove(req.params.id,(err,data)=>{
+        if(!data){
+            return res.json({success:false, msg:'not found'})
+        } else {
+            return res.status(200).json({success:true, msg:'product deleted'})
+        }
+    })
+});
+
 module.exports = router;
