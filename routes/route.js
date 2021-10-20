@@ -35,4 +35,32 @@ router.post('/signup',(req,res,next)=>{
     })
 })
 
+// @desc The api for user login
+// @route POST /api/login
+router.post('/login',(req,res,next)=>{
+    const name = req.body.username
+    const password = req.body.password
+    User.getUserByUsername(name,(err,found)=>{
+        if(!found){
+            return res.json({success: false, msg: 'User not found'});
+        }else{
+            User.findOne({username:name,password:password},(err,user)=>{
+                if(!user){
+                    return res.json({success: false, msg: 'Login Failed'});
+                }else{
+                    const token = jwt.sign(user.toJSON(), process.env.JWT_KEY, {
+                        expiresIn: 604800 // one week
+                    });
+                    res.json({
+                        success: true, token: 'JWT '+token,
+                        user:{
+                            id: user._id,
+                            name: user.username
+                        }
+                    });
+                }
+            }) 
+        }
+    })
+})
 module.exports = router;
