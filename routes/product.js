@@ -50,6 +50,18 @@ router.post('/add',(req,res,next)=>{
     })
 })
 
+// @desc get all product details
+// @route GET /product/list
+router.get('/list',(req,res,next) => {
+    Product.find({},(err,data)=>{
+        if(!data){
+            return res.json({success:false, msg:'not found'})
+        } else {
+            return res.status(200).json({success:true, items:data})
+        }
+    })
+});
+
 // @desc The api for update product
 // @route PUT /api/product/edit/:id
 router.put('/edit/:id',(req,res,next)=>{
